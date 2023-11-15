@@ -73,7 +73,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
       </head>
       <body className={`${robotoMono.className} flex py-16`}>
-        <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+        <ThemeProvider attribute="class" defaultTheme="system" storageKey="shiroko-theme" enableSystem>
           {children}
         </ThemeProvider>
       </body>

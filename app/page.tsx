@@ -1,26 +1,27 @@
 "use client";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { useEffect, useRef } from "react";
 
 export default function Home() {
   const { theme, setTheme } = useTheme();
-  const sunRef = useRef<null | HTMLElement>(null);
-  const moonRef = useRef<null | HTMLElement>(null);
 
-  useEffect(() => {
+  const handleToggleTheme = () => {
     if (theme === "dark") {
-      if (sunRef.current !== null && moonRef.current !== null) {
-        sunRef.current.style.display = "none";
-        moonRef.current.style.display = "inline-block";
+      setTheme("light");
+    } else if (theme === "light") {
+      setTheme("dark");
+    } else if (theme === "system") {
+      if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        setTheme("light");
+      } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches) {
+        setTheme("dark");
+      } else {
+        throw new Error("Error set theme for this app");
       }
     } else {
-      if (sunRef.current !== null && moonRef.current !== null) {
-        moonRef.current.style.display = "none";
-        sunRef.current.style.display = "inline-block"
-      }
+      throw new Error("Error set theme for this app");
     }
-  }, [theme]);
+  };
 
   return (
     <div className="m-auto max-w-[600px]">
@@ -40,9 +41,9 @@ export default function Home() {
               <i className="header__icon fa-brands fa-github"></i>
             </Link>
           </li>
-          <li onClick={() => setTheme(theme === "dark" ? "light" : "dark")} className="cursor-pointer">
-            <i ref={sunRef} className="fa-regular fa-sun"></i>
-            <i ref={moonRef} className="fa-regular fa-moon"></i>
+          <li onClick={handleToggleTheme} className="cursor-pointer">
+            <i className="fa-regular fa-sun !hidden dark:!inline-block"></i>
+            <i className="fa-regular fa-moon !inline-block dark:!hidden"></i>
           </li>
         </ul>
       </header>
@@ -55,6 +56,12 @@ export default function Home() {
               link: "https://profile.shirokodev.site/",
               status: "active",
               desc: "shiroko personal portfolio powered by next.js",
+            },
+            {
+              title: "music/shiroko",
+              link: "https://music.shirokodev.site/",
+              status: "building",
+              desc: "shiroko personal music player powered by next.js",
             },
             {
               title: "elainateam/website",
@@ -73,7 +80,9 @@ export default function Home() {
                 >
                   {value.title}
                 </Link>
-                <span className="ml-2 primary-color dark:secondary-color p-1 select-none text-sm rounded-lg">{value.status}</span>
+                <span className="ml-2 primary-color dark:secondary-color p-1 select-none text-sm rounded-lg">
+                  {value.status}
+                </span>
                 <span className="block opacity-80">{value.desc}</span>
               </li>
             );
